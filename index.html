@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Document</title>
+    <style>
+      .box {
+        background-color: aqua;
+        height: 100px;
+        width: 100px;
+      }
+      .box2 {
+        background-color: black;
+        height: 50px;
+        width: 50px;
+      }
+      .box3 {
+        background-color: brown;
+        height: 220px;
+        width: 220px;
+      }
+      [v-cloak] {
+        display: none;
+      }
+      input {
+        display: block;
+        margin: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- v-cloak dung de an cac rang buoc(bind) until vue instance ready, compiler run completed -->
+    <div id="app" v-cloak>
+      <!-- <login-form /> -->
+
+      {{greeting}}
+      <input @keyup.enter="greet(greeting + '.ADD')" v-model="greeting" />
+
+      <hr />
+
+      <div>{{now}}</div>
+      <hr />
+      <p>{{ calculateBooksMessage() }}</p>
+      <hr />
+      <!-- error syntax -->
+      <!-- <span :title="toTitleDate(date)"> {{ formatDate(date) }} </span> -->
+      <hr />
+
+      <!-- <button v-on:click="isVisible = !isVisible">ShowBox</button> -->
+
+      <button @click="toggleBox">ToggleBox</button>
+      <test-box v-if="isVisible" />
+      <!-- <div v-if="isVisible" class="box"></div>
+      <div v-else-if="isVisible2" class="box2"></div>
+      <div v-else="isVisible" class="box3"></div> -->
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      let app = Vue.createApp({
+        data() {
+          return {
+            greeting: "Hello VUE 3",
+            isVisible: false,
+            isVisible2: false,
+            books: [
+              "Vue 2 - Advanced Guide",
+              "Vue 3 - Basic Guide",
+              "Vue 4 - The Mystery",
+            ],
+            title: "Vue 3 - Advanced Guide",
+          };
+        },
+        methods: {
+          toggleBox() {
+            this.isVisible = !this.isVisible;
+          },
+          greet(parameter) {
+            console.log(parameter);
+          },
+          calculateBooksMessage() {
+            console.log(this.books.length);
+            return this.books.length > 0 ? "Yes" : "No";
+          },
+        },
+        computed: {
+          now() {
+            console.log("computed");
+            return Date.now();
+          },
+        },
+        updated() {
+          console.log("updated"); //updated run when data changes
+        },
+      });
+      //lifecycle hooks
+      app.component("test-box", {
+        template: `
+          <div v-if="isVisible" class="box"></div>
+          <div v-else-if="isVisible2" class="box2"></div>
+          <div v-else="isVisible" class="box3"></div>
+        `,
+        mounted() {
+          console.log("mounted");
+        },
+        unmounted() {
+          console.log("unmounted");
+        },
+        created() {
+          console.log("created");
+        },
+      });
+      //.prevent page reloading
+      //:labelProps bindings data() vs labelProps will be pass your value
+      app.component("login-form", {
+        template: `
+              <form @submit.prevent="handleSubmit">
+                <h1>{{title}}</h1>
+
+                <custom-input
+                  v-for="(input, i) in inputs"
+                  :key="i"
+                  v-model="input.value"
+                  :labelProps="input.label"
+                  :type="input.type"
+                />
+                <button>Login</button>
+
+              </form>
+          `,
+        /*
+        Email-form: <custom-input :labelProps="emailLabel" textProps="email" v-model="email" />
+        Password-form: <custom-input :labelProps="passwordLabel" textProps="password" v-model="password"/>
+          */
+        component: ["custom-input"], //registered component
+        data() {
+          return {
+            title: "Login",
+            inputs: [
+              { label: "Email-Loops", value: "", type: "email" },
+              { label: "Password-Loops", value: "", type: "password" },
+            ],
+            email: "emailData",
+            password: "passwordData",
+            emailLabel: "Email Label Data",
+            passwordLabel: "Password Label Data",
+          };
+        },
+        methods: {
+          handleSubmit() {
+            console.log(this.inputs[0].value, this.inputs[1].value); // console new value
+          },
+        },
+      });
+      app.component("custom-input", {
+        template: `
+          <label>
+            {{labelProps}},
+            <input :type="type" v-model="inputValue"/>
+          </label>
+        `, //textProps dang loi
+        computed: {
+          inputValue: {
+            get() {
+              console.log(this.modelValue + ".inputValue"); // console first run argument
+              return this.modelValue; // it return the value of the inputValue, it binding with v-model which give data() returned
+            },
+            set(value) {
+              console.log(value + ".value"); //it binding with v-model
+              //update event listener $emit
+              //when emit event update in set() function, get() function return value change from set() function
+              //email & password in data() function changes
+              this.$emit("update:modelValue", value);
+            },
+          },
+        },
+        //props registered in the component will be passed with props's name similar
+        props: ["labelProps", "modelValue", "textProps", "type"], //register props for
+      });
+      app.mount("#app");
+    </script>
+  </body>
+</html>
