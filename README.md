@@ -10,6 +10,7 @@ npm install -g @vue/cli
 # OR
 yarn global add @vue/cli
 
+# create vue3 project
 vue create name-vue-app
 
 # npm 6.x

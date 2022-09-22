@@ -49,6 +49,7 @@
       <div>{{now}}</div>
       <hr />
       <p>{{ calculateBooksMessage() }}</p>
+      <p>{{ increment() }}</p>
       <ul>
         <li v-for="item in books" ref="items">{{ item }}</li>
       </ul>
@@ -67,8 +68,24 @@
     </div>
 
     <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vuex@4"></script>
     <script>
+      // Create a new store instance.
+      let store = Vuex.createStore({
+        state() {
+          return {
+            count: 0,
+          };
+        },
+        mutations: {
+          increment(state) {
+            state.count++;
+          },
+        },
+      });
+
       let app = Vue.createApp({
+        /* your root component */
         data() {
           return {
             greeting: "Hello VUE 3",
@@ -92,6 +109,10 @@
           calculateBooksMessage() {
             console.log(this.books.length + " books received");
             return this.books.length > 0 ? "Yes" : "No";
+          },
+          increment() {
+            this.$store.commit("increment");
+            console.log(this.$store.state.count);
           },
         },
         computed: {
@@ -238,7 +259,8 @@
         //props registered in the component will be passed with props's name similar
         props: ["labelProps", "modelValue", "textProps", "typeProps"], //register props for
       });
-
+      // Install the store instance as a plugin
+      app.use(store);
       app.mount("#app");
     </script>
   </body>
