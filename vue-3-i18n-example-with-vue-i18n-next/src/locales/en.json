@@ -1,3 +1,5 @@
 {
-  "message": "hello i18n !!"
+  "message": "hello i18n !!",
+  "title": "Vue 3 i18n English",
+  "description": "A Vue i18n next example using vue-i18n-next"
 }
