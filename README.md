@@ -3,7 +3,7 @@
 ## Usage
 
 ```sh
-npm init vue@3
+npm init vue@latest
 create-vue is built on top of Vite, and provides templates for Vue 3 projects.
 
 npm install -g @vue/cli
