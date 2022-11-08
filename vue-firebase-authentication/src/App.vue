@@ -6,6 +6,7 @@ import { useRouter } from "vue-router";
 const auth = getAuth();
 const router = useRouter();
 const isLoggedIn = ref(true);
+const info = ref();
 // runs after firebase is initialized
 // firebase.auth().
 onAuthStateChanged(auth, function (user) {
@@ -14,6 +15,7 @@ onAuthStateChanged(auth, function (user) {
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/firebase.User
     const uid = user.uid;
+    info.value = user.displayName;
     console.log(uid + user.email);
   } else {
     // User is signed out
@@ -42,8 +44,9 @@ const signOutButton = () => {
         <router-link to="/feed"> Feed of True </router-link> |
       </span>
       <router-link to="/feed"> Feed </router-link> |
-      <span v-if="isLoggedIn"
-        >>
+      <span v-if="isLoggedIn">
+        <P>{{ info }}</P>
+        >
         <button @click="signOutButton">Logout</button>
       </span>
       <span v-else>
