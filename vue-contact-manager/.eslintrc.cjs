@@ -20,11 +20,12 @@ module.exports = {
       'error',
       {
         singleQuote: true,
-        parser: 'flow',
       },
     ],
-    'vue/multi-word-component-names': 'off',
-    'vue/no-multiple-template-root': 'off',
+    indent: ['error', 2],
+    'no-unused-vars': 'error',
+    'no-duplicate-imports': 'error',
+    eqeqeq: 'error',
     'no-undef': 'off',
   },
 };
